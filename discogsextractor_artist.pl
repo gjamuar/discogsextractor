@@ -234,12 +234,12 @@ use constant LOG_SETTING => q(
    log4perl.appender.SCREEN.layout.ConversionPattern = %m %n
    log4perl.appender.LOG1           = Log::Log4perl::Appender::File
    
-   log4perl.appender.LOG1.filename  = /aurora.cs/ssd/apo/DiscogsExtracterlog.log
+   log4perl.appender.LOG1.filename  = /aurora.cs/local2/gjamuar/DiscogsExtracterlog.log
    log4perl.appender.LOG1.mode      = append
    log4perl.appender.LOG1.layout    = Log::Log4perl::Layout::PatternLayout
    log4perl.appender.LOG1.layout.ConversionPattern = %d %p %m %n
 );
-use constant OUTPUT_DIR     => "/aurora.cs/ssd/apo/discogs/discogs_output41";
+use constant OUTPUT_DIR     => "/aurora.cs/local2/gjamuar/discogs_output41";
 use constant CONNECTION_STR =>
   "DBI:Pg:database=discogs50;host=localhost;port=5432";
 use constant DBUSER => "gjamuar";

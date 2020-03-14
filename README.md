@@ -1,5 +1,6 @@
 # discogsextractor
 
+*Download all the modules*
  ```
  cd ~/downloads/
  
@@ -15,6 +16,7 @@
  wget https://cpan.metacpan.org/authors/id/I/IS/ISHIGAKI/JSON-4.02.tar.gz 
  ```
  
+*unzip all the modules in src directory*
  ```
 cd ~/src
 tar -zxvf ~/downloads/*
@@ -36,6 +38,8 @@ $ ls
 DBD-Pg-3.10.4  DBI-1.643  Encode-3.04  JSON-4.02  libwww-perl-6.43  Log-Log4perl-1.49  Parallel-Fork-BossWorkerAsync-0.09  Try-Tiny-0.30  URI-1.76  XML-XPath-1.44
 ```
 
+
+*Install each modules like this with local prefix*
 ```
 cd DBI-1.643/
 perl Makefile.PL PREFIX=~/lib/perl5
@@ -43,7 +47,7 @@ make
 make test
 make install
 ```
-
+*set PERL5LIB to point to installed module directory*
 ```
 setenv PERL5LIB /ilab/users/gjamuar/lib/perl5/share/
 ```

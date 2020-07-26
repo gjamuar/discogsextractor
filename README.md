@@ -1,5 +1,7 @@
 # discogsextractor
 
+Reference: [Installing a CPAN Perl module from a non-root account](http://alumni.soe.ucsc.edu/~you/notes/perl-module-install.html)
+
 *Download all the modules*
  ```
  cd ~/downloads/

@@ -51,5 +51,9 @@ make install
 ```
 *set PERL5LIB to point to installed module directory*
 ```
-setenv PERL5LIB /ilab/users/gjamuar/lib/perl5/share/
+setenv PERL5LIB /home/gjamuar/lib/perl5/share/
+export PERL5LIB=/home/gjamuar/lib/perl5/share/perl/5.34.0/
+export PERL5LIB=/home/gjamuar/lib/perl5/lib/x86_64-linux-gnu/perl/5.34.0/
+perl discogsextractor_artist.pl output_1 0 1 1 48919
+
 ```

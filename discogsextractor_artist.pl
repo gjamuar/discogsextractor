@@ -234,15 +234,16 @@ use constant LOG_SETTING => q(
    log4perl.appender.SCREEN.layout.ConversionPattern = %m %n
    log4perl.appender.LOG1           = Log::Log4perl::Appender::File
    
-   log4perl.appender.LOG1.filename  = /aurora.cs/ssd/apo/DiscogsExtracterlog.log
+   log4perl.appender.LOG1.filename  = DiscogsExtracterlog.log
    log4perl.appender.LOG1.mode      = append
    log4perl.appender.LOG1.layout    = Log::Log4perl::Layout::PatternLayout
    log4perl.appender.LOG1.layout.ConversionPattern = %d %p %m %n
 );
-use constant OUTPUT_DIR     => "/aurora.cs/ssd/apo/discogs/discogs_output41";
+use constant OUTPUT_DIR     => "/home/gjamuar/Gramusik_Projects/discogsextractor/output_2";
 use constant CONNECTION_STR =>
-  "DBI:Pg:database=discogs50;host=localhost;port=5432";
-use constant DBUSER => "gjamuar";
+  "DBI:Pg:database=discogs_20230101;host=localhost;port=5432";
+use constant DBUSER => "postgres";
+use constant DBPSWD => "Vv8637440";
 
 $SIG{'INT'}    = 'SIG_handler';
 $SIG{'ABRT2'}  = 'SIG_handler';
@@ -292,7 +293,7 @@ my $logger = Log::Log4perl->get_logger();
 my $runone      = 0;
 my $start       = 0;
 my $set_num     = 30000;                      #1;
-my $workercount = 70;                         #2
+my $workercount = 10;                         #2
 my $rows        = $set_num * $workercount;    #3;
 if ( $runone eq 1 ) {
 	$set_num     = 1;
@@ -355,7 +356,7 @@ my $bw = Parallel::Fork::BossWorkerAsync->new(
 	worker_count => $workercount,
 );
 
-my $db = DBI->connect( CONNECTION_STR, DBUSER, '', { 'RaiseError' => 1 } );
+my $db = DBI->connect( CONNECTION_STR, DBUSER, DBPSWD, { 'RaiseError' => 1 } );
 
 $db->{'pg_enable_utf8'} = 1;
 
@@ -364,7 +365,7 @@ print "database connected for process  $$\n";
 
 my $stmt_artist_ids =
   $db->prepare(
-"Select distinct releases_artists.artist_id from   discogs.releases_artists order by releases_artists.artist_id;"
+"Select distinct releases_artists.artist_id from   public.releases_artists order by releases_artists.artist_id;"
   );
 
 my @hashlist;
@@ -426,7 +427,7 @@ while ( $bw->pending() ) {
 $db->disconnect();
 $bw->shut_down();
 
-#my $stmt_id = $db->prepare("Select release_id from discogs.releases_artists where artist_id = '194' and position =1;");
+#my $stmt_id = $db->prepare("Select release_id from public.releases_artists where artist_id = '194' and position =1;");
 
 sub findArtistData {
 	my $log_conf = LOG_SETTING;
@@ -444,7 +445,7 @@ sub findArtistData {
 		@idary = split( /:/, $_[0]{"logdata"} );
 	}
 
-	my $db = DBI->connect( CONNECTION_STR, DBUSER, '', { 'RaiseError' => 1 } );
+	my $db = DBI->connect( CONNECTION_STR, DBUSER, DBPSWD, { 'RaiseError' => 1 } );
 
 	$db->{'pg_enable_utf8'} = 1;
 
@@ -484,16 +485,16 @@ sub findArtistData {
   master.genres, 
   master.styles
 FROM 
-  discogs.master
+  public.master
 WHERE 
   master.id in (
   
   SELECT distinct
   release.master_id
 FROM 
-  discogs.release
+  public.release
 WHERE 
-  release.id in (Select release_id from   discogs.releases_artists where 
+  release.id in (Select release_id from   public.releases_artists where 
   releases_artists.artist_id = ? ) 
   and release.master_id is not null
 );"
@@ -509,7 +510,7 @@ WHERE
   release.styles,
   release.master_id
 FROM 
-  discogs.release
+  public.release
 WHERE 
   master_id = ? order by release.id ;"
 			);
@@ -524,9 +525,9 @@ WHERE
   release.styles,
   release.master_id
 FROM 
-  discogs.release
+  public.release
 WHERE 
-  release.id in (Select release_id from   discogs.releases_artists where 
+  release.id in (Select release_id from   public.releases_artists where 
   releases_artists.artist_id = ? )
   and release.master_id is null
   order by release.id ;"
@@ -541,7 +542,7 @@ WHERE
   releases_artists.join_relation, 
   releases_artists.\"position\"
 FROM 
-  discogs.releases_artists
+  public.releases_artists
 WHERE 
   releases_artists.release_id = ? order by releases_artists.\"position\";"
 			);
@@ -555,7 +556,7 @@ WHERE
   track.duration, 
   track.trackno 
 FROM 
-  discogs.track
+  public.track
 WHERE 
   track.release_id = ? order by track.release_id;"
 			);
@@ -569,7 +570,7 @@ WHERE
   tracks_artists.anv, 
   tracks_artists.join_relation
 from
-  discogs.tracks_artists
+  public.tracks_artists
 where 
   tracks_artists.track_id = ?;"
 			);
@@ -582,7 +583,7 @@ where
   tracks_extraartists.anv, 
   tracks_extraartists.role
 from
-  discogs.tracks_extraartists
+  public.tracks_extraartists
 where 
   tracks_extraartists.track_id = ?;"
 			);
@@ -598,7 +599,7 @@ where
 				 artist.profile,
 				 artist.members,
 				 artist.groups
-				 FROM discogs.artist
+				 FROM public.artist
 				 where
 				 artist.id = ?;"
 			);
@@ -611,7 +612,7 @@ where
 				 releases_formats.format_name,
 				 releases_formats.qty,
 				 releases_formats.descriptions
-				 FROM discogs.releases_formats
+				 FROM public.releases_formats
 				 where
 				 releases_formats.release_id = ?;"
 			);
